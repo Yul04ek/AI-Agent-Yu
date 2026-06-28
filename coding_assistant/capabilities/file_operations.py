@@ -79,16 +79,16 @@ class FileOperations(AbstractCapability[Any]):
         toolset.add_function(search_files)
         return toolset
 
-# Hook: fires before every tool call and prints the tool name to the consol
-async def before_tool_execute( 
-        self,
-        ctx: RunContext[AgentDeps],
-        *,
-        call: ToolCallPart,
-        tool_def: ToolDefinition,
-        args: dict[str, Any],
-    ) -> dict[str, Any]:
-        ctx.deps.console.log(f"Calling tool: {call.tool_name}")
-        return args
+    # Hook: fires before every tool call and prints the tool name to the consol
+    async def before_tool_execute( 
+            self,
+            ctx: RunContext[AgentDeps],
+            *,
+            call: ToolCallPart,
+            tool_def: ToolDefinition,
+            args: dict[str, Any],
+        ) -> dict[str, Any]:
+            ctx.deps.console.log(f"Calling tool: {call.tool_name}")
+            return args
 
 
