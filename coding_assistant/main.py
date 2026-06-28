@@ -9,7 +9,17 @@ from rich.markdown import Markdown
 
 from coding_assistant.deps import AgentDeps
 from coding_assistant.utils import get_env
+from coding_assistant.file_operations import FileOperations
 
+_INSTRUCTIONS=(
+        "You are a Python coding assistant. "
+        "Write clear, correct, and minimal Python code that runs as-is. "
+        "Prefer the standard library and follow PEP 8 with type hints. "
+        "By default, reply with code and no explanation. "
+        "Explain your reasoning only when the user explicitly asks. "
+        "If the request is ambiguous, ask one short clarifying question before coding. "
+        "If you are unsure or cannot do something, say so instead of inventing APIs."
+    )
 
 async def run_agent() -> None:
     console = Console()
@@ -31,16 +41,10 @@ async def run_agent() -> None:
     # 3. Create the agent. Attach the model and instructions
     agent = Agent(
         model=model,
-        instructions=(
-            "You are a Python coding assistant. "
-            "Write clear, correct, and minimal Python code that runs as-is. "
-            "Prefer the standard library and follow PEP 8 with type hints. "
-            "By default, reply with code and no explanation. "
-            "Explain your reasoning only when the user explicitly asks. "
-            "If the request is ambiguous, ask one short clarifying question before coding. "
-            "If you are unsure or cannot do something, say so instead of inventing APIs."
-        ),
+        instructions=_INSTRUCTIONS,
+        capabilities=[FileOperations()],
     )
+    
 
     # 4. Conversation loop with message history
     message_history: list[ModelMessage] = []
@@ -57,6 +61,7 @@ def main() -> None:
         asyncio.run(run_agent())
     except (EOFError, KeyboardInterrupt):
         pass
-        
+
+
 if __name__ == "__main__":
     main()

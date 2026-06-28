@@ -15,9 +15,41 @@ def _path_sandbox(path: str) -> Path:
     return Path("sandbox") / Path(path)
 
 
-# 1. Implement the read_file tool
+def read_file(path: str) -> str:
+    """Read the contents of a file.
 
-# 2. Implement the write_file tool
+    Parameters
+    ----------
+    path : str
+        The relative path to the file within the sandbox.
+
+    Returns
+    -------
+    str
+        The contents of the file as a string.
+    """
+    return _path_sandbox(path).read_text(encoding="utf-8")
+
+
+def write_file(path: str, content: str) -> str:
+    """Write content to a file, creating it if it does not exist.
+
+    Parameters
+    ----------
+    path : str
+        The relative path to the file within the sandbox.
+    content : str
+        The content to write to the file.
+
+    Returns
+    -------
+    str
+        A confirmation message.
+    """
+    target = _path_sandbox(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content, encoding="utf-8")
+    return f"File '{path}' written successfully."
 
 
 def search_files(pattern: str) -> list[str]:
@@ -25,19 +57,25 @@ def search_files(pattern: str) -> list[str]:
 
     Parameters
     ----------
-    patters : str
-        The glob patterns to match files (e.g., "**/*.py", "test_*.py)
+    pattern : str
+        The glob pattern to match files (e.g., "**/*.py", "test_*.py").
 
     Returns
     -------
     list[str]
         A list of relative file paths matching the pattern.
-
     """
     sandbox_root = _path_sandbox("")
     matches = sandbox_root.glob(pattern)
-
     return [str(p.relative_to(sandbox_root)) for p in matches]
 
 
-# 3. Implement the FileOperations capability. Override the get_toolset() method.
+@dataclass
+class FileOperations(AbstractCapability[Any]):
+    def get_toolset(self) -> FunctionToolset:
+        toolset = FunctionToolset()
+        toolset.add_function(read_file)
+        toolset.add_function(write_file)
+        toolset.add_function(search_files)
+        return toolset
+
