@@ -43,6 +43,7 @@ async def run_agent() -> None:
         model=model,
         instructions=_INSTRUCTIONS,
         capabilities=[FileOperations()],
+        deps_type=AgentDeps,
     )
     
 
@@ -51,9 +52,12 @@ async def run_agent() -> None:
 
     while True:
         user_input = console.input(">> ")
-        result = await agent.run(user_input, message_history=message_history)
+        deps = AgentDeps(console=console)                       #pass console into deps so hook can write to it
+        result = await agent.run(user_input, message_history=message_history, deps=deps)
         console.print(Markdown(result.output))
         message_history = result.all_messages()
+        
+        
 
 
 def main() -> None:
