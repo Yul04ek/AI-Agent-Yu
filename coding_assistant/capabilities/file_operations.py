@@ -70,6 +70,23 @@ def search_files(pattern: str) -> list[str]:
     return [str(p.relative_to(sandbox_root)) for p in matches]
 
 
+def delete_file(path: str) -> str:
+    """Delete a file.
+
+    Parameters
+    ----------
+    path : str
+        The relative path to the file within the sandbox.
+
+    Returns
+    -------
+    str
+        A confirmation message.
+    """
+    _path_sandbox(path).unlink()
+    return f"File '{path}' deleted successfully."
+
+
 @dataclass
 class FileOperations(AbstractCapability[Any]):
     def get_toolset(self) -> FunctionToolset:
@@ -77,18 +94,20 @@ class FileOperations(AbstractCapability[Any]):
         toolset.add_function(read_file)
         toolset.add_function(write_file)
         toolset.add_function(search_files)
+        toolset.add_function(delete_file)
         return toolset
 
-    # Hook: fires before every tool call and prints the tool name to the consol
-    async def before_tool_execute( 
-            self,
-            ctx: RunContext[AgentDeps],
-            *,
-            call: ToolCallPart,
-            tool_def: ToolDefinition,
-            args: dict[str, Any],
-        ) -> dict[str, Any]:
-            ctx.deps.console.log(f"Calling tool: {call.tool_name}")
-            return args
+    async def before_tool_execute(
+        self,
+        ctx: RunContext[AgentDeps],
+        *,
+        call: ToolCallPart,
+        tool_def: ToolDefinition,
+        args: dict[str, Any],
+    ) -> dict[str, Any]:
+        # Runs before every tool call; logs which tool the agent invokes.
+        # Must return args so execution proceeds with the (possibly edited) arguments.
+        ctx.deps.console.log(f"Calling tool: {call.tool_name}")
+        return args
 
 

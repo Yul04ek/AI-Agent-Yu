@@ -9,7 +9,7 @@ from rich.markdown import Markdown
 
 from coding_assistant.deps import AgentDeps
 from coding_assistant.utils import get_env
-from coding_assistant.file_operations import FileOperations
+from coding_assistant.capabilities.file_operations import FileOperations
 
 _INSTRUCTIONS=(
         "You are a Python coding assistant. "
