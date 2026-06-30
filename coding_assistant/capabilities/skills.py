@@ -42,7 +42,7 @@ class Skills(AbstractCapability[Any]):
             name = skill.metadata.get("name")
             description = skill.metadata.get("description")
 
-            result += f"- {name}: {description}"
+            result += f"\n- {name}: {description}"
 
         return result
 

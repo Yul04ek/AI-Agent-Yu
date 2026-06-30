@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.markdown import Markdown
 
 from coding_assistant.capabilities.file_operations import FileOperations
-from coding_assistant.capabilities.reasoning_effort import ReasoningEffort
+from coding_assistant.capabilities.reasoning_effort import ReasoningEffort, _load_skill_keywords
 from coding_assistant.capabilities.skills import Skills
 from coding_assistant.deps import AgentDeps
 from coding_assistant.utils import get_env
@@ -27,15 +27,19 @@ _INSTRUCTIONS = (
 
 async def run_agent() -> None:
     console = Console()
-    console.print("Coding assistant ready. Type your request:")
+    console.print("Coding assistant ready. Type your request:\n"
+            "Tip: add @high in your request for deeper reasoning on complex tasks, "
+            " or @low for faster output on simple ones."
+    )
+    skill_keywords = _load_skill_keywords() #load once before the loop
     
     provider = OpenAIProvider(
-        base_url=get_env("OPENAI_API_BASE"),
-        api_key=get_env("OPENAI_API_KEY"),
+    base_url=get_env("BASE_URL"),
+    api_key=get_env("API_KEY"),
     )
 
     model = OpenAIResponsesModel(
-        model_name=get_env("MODEL"),
+        model_name=get_env("MODEL_NAME"),
         provider=provider,
     )
 
@@ -44,7 +48,7 @@ async def run_agent() -> None:
         instructions=_INSTRUCTIONS,
         capabilities=[
             FileOperations(),
-            ReasoningEffort(),
+            ReasoningEffort(skill_keywords=skill_keywords),
             Skills(),
         ],
         deps_type=AgentDeps,
