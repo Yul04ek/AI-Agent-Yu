@@ -27,8 +27,10 @@ class ReasoningEffort(AbstractCapability[Any]):
 
             # Manual tag wins — useralready decided.
             if "@low" in prompt:
+                ctx.deps.console.log("using fast reasoning")
                 return ModelSettings(thinking="low")
             if "@high" in prompt:
+                ctx.deps.console.log("using deep reasoning.")
                 return ModelSettings(thinking="high")
 
             # No tag: detect automatically and apply.
