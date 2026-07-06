@@ -1,4 +1,4 @@
-![AI Agent Yu helping a scientist](ai-scientist.png)
+![AI Agent Yu helping a scientist](IMG_8485.png)
 
 # AI Agent Yu
 
