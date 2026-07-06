@@ -1,3 +1,5 @@
+![AI Agent Yu helping a scientist](ai-scientist.png)
+
 # AI Agent Yu
 
 AI Agent Yu is a small coding assistant built during the Agentic AI masterclass by the appliedAI Institute.
