@@ -8,20 +8,35 @@ from pydantic_ai.toolsets import FunctionToolset
 
 
 def load_skill(skill_name: str) -> str:
-    """Load a skill.
+    """Load a skill's router file (SKILL.md), supporting both
+    flat-style (skills/name.md) and folder-style (skills/name/SKILL.md) skills.
 
     skill_name : str
-        The name of the skill to load.
+        The name of the skill to load (e.g. "web-scraping-econ").
+        Should be a bare name, not a path.
 
     Returns
     -------
     str
-        The contents of the skill file.
+        The contents of the skill's router file.
 
     """
-    file_path = f"skills/{skill_name}.md"
+    # Defensive: strip any accidental "skills/" prefix or ".md" suffix
+    # in case the model passes a path instead of a bare name.
+    clean_name = skill_name.removeprefix("skills/").removesuffix(".md")
 
-    skill = frontmatter.load(file_path)
+    folder_path = Path("skills") / clean_name / "SKILL.md"
+    flat_path = Path("skills") / f"{clean_name}.md"
+
+    if folder_path.exists():
+        file_path = folder_path
+    elif flat_path.exists():
+        file_path = flat_path
+    else:
+        msg = f"Skill '{skill_name}' not found in flat or folder format."
+        raise FileNotFoundError(msg)
+
+    skill = frontmatter.load(str(file_path))
     return skill.content
 
 
@@ -30,13 +45,22 @@ class Skills(AbstractCapability[Any]):
     def get_instructions(self) -> str:
         result = (
             "You can extend your capabilities by using skills.\n"
-            "Use a skill when doing tasks described in the skill.\n\n"
+             "BEFORE writing any code or answering, check whether any skill below "
+            "matches the user's request — even if you feel confident you already "
+            "know how to do the task. If a skill matches, you MUST call load_skill "
+            "with that skill's name FIRST, and follow its instructions.\n\n"
             "You have the following skills available:"
         )
 
-        files = Path("skills").glob("*.md")
+        skills_dir = Path("skills")
 
-        for f in files:
+        # Flat-style skills: skills/name.md
+        flat_files = skills_dir.glob("*.md")
+
+        # Folder-style skills: skills/name/SKILL.md
+        folder_files = skills_dir.glob("*/SKILL.md")
+
+        for f in list(flat_files) + list(folder_files):
             skill = frontmatter.load(str(f))
 
             name = skill.metadata.get("name")
