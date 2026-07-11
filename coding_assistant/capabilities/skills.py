@@ -45,7 +45,10 @@ class Skills(AbstractCapability[Any]):
     def get_instructions(self) -> str:
         result = (
             "You can extend your capabilities by using skills.\n"
-            "Use a skill when doing tasks described in the skill.\n\n"
+             "BEFORE writing any code or answering, check whether any skill below "
+            "matches the user's request — even if you feel confident you already "
+            "know how to do the task. If a skill matches, you MUST call load_skill "
+            "with that skill's name FIRST, and follow its instructions.\n\n"
             "You have the following skills available:"
         )
 
