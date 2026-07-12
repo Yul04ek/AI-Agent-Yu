@@ -26,9 +26,13 @@ def read_file(path: str) -> str:
     Returns
     -------
     str
-        The contents of the file as a string.
+        The contents of the file as a string, or an error message if the
+        file does not exist.
     """
-    return _path_sandbox(path).read_text(encoding="utf-8")
+    target = _path_sandbox(path)
+    if not target.exists():
+        return f"Error: file '{path}' not found in sandbox."
+    return target.read_text(encoding="utf-8")
 
 
 def write_file(path: str, content: str) -> str:
@@ -81,9 +85,12 @@ def delete_file(path: str) -> str:
     Returns
     -------
     str
-        A confirmation message.
+        A confirmation message, or an error message if the file does not exist.
     """
-    _path_sandbox(path).unlink()
+    target = _path_sandbox(path)
+    if not target.exists():
+        return f"Error: file '{path}' not found in sandbox."
+    target.unlink()
     return f"File '{path}' deleted successfully."
 
 
