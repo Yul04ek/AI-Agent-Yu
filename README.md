@@ -47,38 +47,35 @@ for a more detailed, precise answer, or faster to save tokens.
 
 You can use any Python environment manager (conda, venv, etc.). Example with conda:
 
-​```bash
+```bash
 conda create -n agentic-ai python=3.12 -y
 conda activate agentic-ai
-​```
-
+```
 
 Install dependencies:
 
-​```bash
+```bash
 python -m pip install "pydantic-ai[openai]" openai rich python-frontmatter
-​```
+```
 
 ## Configuration
 
 Create a `.env` file in the project root with your OpenAI-compatible credentials:
 
-​```
+```
 BASE_URL=https://openrouter.ai/api/v1
 API_KEY=sk-...
 MODEL_NAME=your-model-name
-​```
+```
 
 ## Run
 
-​```bash
+```bash
 python -m coding_assistant.main
-​```
+```
 
 You can now chat with the agent from your terminal.
 
 ## Why this project exists
 
-This repository is part of my THRIVE portfolio: it shows that I can set up a 
-local Python environment, use an LLM framework, and design a simple but 
-extensible agent that works on my own machine.
+This repository is part of my THRIVE portfolio: it shows that I can set up a local Python environment, use an LLM framework, and design a simple but extensible agent that works on my own machine.
