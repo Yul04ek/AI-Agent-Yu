@@ -64,8 +64,13 @@ skills/my-skill/
 1. Ask what task the skill should cover (if unclear).
 2. Propose a `name` (kebab-case) and confirm it will be the file name.
 3. Draft the frontmatter, then the body.
-4. Show the complete file content to the user and tell them to save it as
-   `skills/<name>.md`. Do NOT use write_file for this: write_file saves into the
-   `sandbox/` directory, but skills must live in the `skills/` directory, so the
-   user has to place the file there themselves.
-5. Remind the user to restart the agent so the new skill is detected.
+4. Use write_file to save the file(s) into the sandbox/ directory, 
+   preserving the same folder structure the skill will need:
+   - Flat skill: sandbox/<name>.md
+   - Two-level skill: sandbox/<name>/SKILL.md and 
+     sandbox/<name>/references/<topic>.md for each reference file.
+   Tell the user the skill has been created in sandbox/ and that they 
+   need to move the whole folder (or file) into skills/ themselves, 
+   since write_file cannot write outside sandbox/.
+5. Remind the user to restart the agent so the new skill is detected 
+   after moving it.
